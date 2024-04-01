@@ -1,11 +1,12 @@
 import { useMemo, useState } from "react"
+import { useBudget } from "../hooks/useBudget"
 
 export const BudgetForm = () => {
 
   const [budget, setBudget] = useState(0)
+  const {dispatch} = useBudget()
 
-  function handleChange(event:React.ChangeEvent<HTMLInputElement>){
-    event.preventDefault
+  function handleChange(event:React.ChangeEvent<HTMLInputElement>){  //Función para hacer submit, captura el evento OncHANGE
     setBudget(event.target.valueAsNumber)  //Lo convierte a número
   }
 
@@ -13,9 +14,15 @@ export const BudgetForm = () => {
     return isNaN(budget) || budget <= 0  //Regresa true para hacer disable si no es un numero o es igual o menor a cero
   },[budget])
 
+  function handleSubmit(event:React.ChangeEvent<HTMLFormElement>){  //Función para hacer submit, captura el evento OnSubmit
+    event.preventDefault()       //Evitando el refresh de la pag
+    console.log("ADIING BUDGET")     
+    dispatch({type:'add-budget', payload:{budget:budget}})    //Accediendo al dispatch y seteando al state global, se llama usando el context del custom hook
+  }
+
   return (
     <>
-      <form className=" space-y-5 ">
+      <form className=" space-y-5" onSubmit={handleSubmit}>
           <div className="flex flex-col space-y-5">
             <label htmlFor="budget" className="text-4xl text-blue-500 font-bold text-center">Define your budget</label>
             <input 
