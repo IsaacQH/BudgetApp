@@ -7,7 +7,8 @@ export type BudgetActions =
     {type: 'add-budget', payload:{budget:number}} |   //action dispatch que captura el budget
     {type: 'show-modal'} |        //Action para mostrar modal
     {type: 'close-modal'} |    //Action para cerrar modal
-    {type: 'add-expense', payload: {expense: DraftExpense}}
+    {type: 'add-expense', payload: {expense: DraftExpense}} |
+    {type: 'remove-expense', payload:{id:Expense['id']}}
 
 export type BudgetState = {
     budget:number         //Aqui guarda el budget
@@ -61,6 +62,16 @@ export const budgetReducer = (
             ...state,
             expenses: [...state.expenses, expense], //Toma una copia del aarreglo pasado, añade uno nuevo
             modal: false
+        }
+    }
+
+    if(action.type === 'remove-expense'){
+
+        const updatedExpenses = state.expenses.filter((expense)=> expense.id !== action.payload.id) //Filtra todo aquello que no sea igual al id, regrea el eliminado
+
+        return {
+            ...state,
+            expenses: updatedExpenses
         }
     }
 
