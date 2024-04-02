@@ -45,8 +45,14 @@ export const ExpenseForm = () => {
             setError('All field must be fulled')
             return
         }
-        setError('')
-        dispatch({type:'add-expense', payload:{expense: expense}})
+        setError('')  //Vacia el error
+        dispatch({type:'add-expense', payload:{expense: expense}}) //Agrega un bill
+        setExpense({       //Riiniciando form
+            amount: 0,
+            expensename:'',
+            category: '',
+            date: new Date()
+        })
     }
         
     return (

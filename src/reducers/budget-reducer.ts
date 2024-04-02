@@ -32,7 +32,7 @@ const createExpense = (draftExpense:DraftExpense) : Expense => { //Ingresa un ti
 export const budgetReducer = (
     state: BudgetState = initialState,
     action:BudgetActions
-) => {
+) => { 
 
     if(action.type === 'add-budget'){
         return{
@@ -59,7 +59,8 @@ export const budgetReducer = (
         const expense = createExpense(action.payload.expense)
         return{
             ...state,
-            expenses: [...state.expenses, expense] //Toma una copia del aarreglo pasado, añade uno nuevo
+            expenses: [...state.expenses, expense], //Toma una copia del aarreglo pasado, añade uno nuevo
+            modal: false
         }
     }
 
