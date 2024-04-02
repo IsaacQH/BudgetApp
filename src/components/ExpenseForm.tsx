@@ -8,6 +8,7 @@ import 'react-date-picker/dist/DatePicker.css'
 
 import { DraftExpense, Value } from "../types"
 import { ErrorMessage } from "./ErrorMessage"
+import { useBudget } from "../hooks/useBudget"
 
 export const ExpenseForm = () => {
 
@@ -18,6 +19,7 @@ export const ExpenseForm = () => {
         date: new Date()
     })
     const [error, setError] = useState('') //State para colocar error
+    const {dispatch} = useBudget()
 
     const handleChangeDate = (value:Value) => {  //Captura en el onChange para tener el valor que se este colocando en el input
         setExpense({
@@ -44,6 +46,7 @@ export const ExpenseForm = () => {
             return
         }
         setError('')
+        dispatch({type:'add-expense', payload:{expense: expense}})
     }
         
     return (
