@@ -4,9 +4,7 @@ import DatePicker from "react-date-picker"
 import 'react-calendar/dist/Calendar.css'
 import 'react-date-picker/dist/DatePicker.css'
 
-type ValuePiece = Date | null;
 
-type Value = ValuePiece | [ValuePiece, ValuePiece];
 
 export const ExpenseForm = () => {
   return (
