@@ -4,7 +4,7 @@
 //Tipo de dato para el bill guardadp
 export type Expense = {
     id: string,
-    name: string,
+    expensename: string,
     amount: number,
     category: string,
     date: Value       //Tipo de dato Value por dependencia
