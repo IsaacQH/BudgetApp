@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 import { categories } from "../data/categories"
 
@@ -19,7 +19,14 @@ export const ExpenseForm = () => {
         date: new Date()
     })
     const [error, setError] = useState('') //State para colocar error
-    const {dispatch} = useBudget()
+    const {state, dispatch} = useBudget()
+
+    useEffect(() => {     
+        if(state.editingID){      //Revisa que exista un state
+            const editingExpense = state.expenses.filter((expense) => expense.id === state.editingID)[0]  //Rgresa el primer valor del filter coincidiendo con los ids del state registrado y el arreglo expenses
+            setExpense(editingExpense)   //Setea los valores del expense al objeto  y llena el formulario
+        }
+    },[state.editingID])  //useEffet para revisar cada que exista un editingID
 
     const handleChangeDate = (value:Value) => {  //Captura en el onChange para tener el valor que se este colocando en el input
         setExpense({
@@ -45,8 +52,14 @@ export const ExpenseForm = () => {
             setError('All field must be fulled')
             return
         }
+
+        if(state.editingID){  //Si existe un editID estamos editando, sino creando
+            dispatch({type: 'edit-expense', payload: {expense: {id: state.editingID, ...expense}}}) //Pasa el payload con un nuevo objeto pero el mismo id
+        } else {
+            dispatch({type:'add-expense', payload:{expense: expense}}) //Agrega un bill
+        }
+
         setError('')  //Vacia el error
-        dispatch({type:'add-expense', payload:{expense: expense}}) //Agrega un bill
         setExpense({       //Riiniciando form
             amount: 0,
             expensename:'',
@@ -59,7 +72,7 @@ export const ExpenseForm = () => {
         <form className="space-y-5" onSubmit={handleSubmit}>
             <legend
                 className="uppercase text-center text-2xl font-black border-b-4 border-blue-500 py-2"
-            >New Bill</legend>
+            >{state.editingID ? "Editing" : "New Bill"}</legend>
 
             {error && <ErrorMessage>{error}</ErrorMessage>}
 
@@ -132,7 +145,7 @@ export const ExpenseForm = () => {
             <input
                 type="submit"
                 className="bg-blue-600 cursor-pointer w-full p-2 text-white uppercase font-bold rounded-lg hover:bg-blue-700"
-                value="Add Bill"
+                value={state.editingID ? "Edit Bill" : "Add Bill"}
             />
 
         </form>

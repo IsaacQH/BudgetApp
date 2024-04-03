@@ -7,19 +7,24 @@ export type BudgetActions =
     {type: 'add-budget', payload:{budget:number}} |   //action dispatch que captura el budget
     {type: 'show-modal'} |        //Action para mostrar modal
     {type: 'close-modal'} |    //Action para cerrar modal
-    {type: 'add-expense', payload: {expense: DraftExpense}} |
-    {type: 'remove-expense', payload:{id:Expense['id']}}
+    {type: 'add-expense', payload: {expense: DraftExpense}} |  //Action que añade expense tipo draft sin id
+    {type: 'remove-expense', payload:{id:Expense['id']}} | //Action que captura el id y remueve
+    {type: 'edit-get-id', payload:{id:Expense['id']}} |  //Action que captura y guarda el id editable
+    {type: 'edit-expense', payload:{expense: Expense}}
+
 
 export type BudgetState = {
     budget:number         //Aqui guarda el budget
     modal: boolean
     expenses: Expense[] //Tipo expense porque añadirá un id
+    editingID: Expense['id']   //Alberga el id que se editará
 }
 
 export const initialState: BudgetState = { //iniciamos los estados
     budget: 0,
     modal: false,   
-    expenses: []
+    expenses: [],
+    editingID: ''
 }
 
 const createExpense = (draftExpense:DraftExpense) : Expense => { //Ingresa un tipo draft regresa el objeto con ID
@@ -52,7 +57,8 @@ export const budgetReducer = (
     if(action.type === 'close-modal'){
         return{
             ...state,
-            modal: false //Seteamos a true y mostramos modal
+            modal: false, //Seteamos a true y mostramos modal
+            editingID:''   //elimina el id guardado
         }
     }
 
@@ -71,8 +77,29 @@ export const budgetReducer = (
 
         return {
             ...state,
-            expenses: updatedExpenses
+            expenses: updatedExpenses,
+            editingID: ''    //Vacia el edit
         }
+    }
+
+    if(action.type === 'edit-get-id'){  //Registra el id
+        return {
+            ...state,
+            editingID: action.payload.id,   //Captura en el state el id editable
+            modal:true          //Abre modal para editar
+        }
+    }
+
+    if(action.type === 'edit-expense'){
+        const updatedExpenses = state.expenses.map(expense => expense.id === action.payload.expense.id ? action.payload.expense : expense)  
+        //Hace un map en todo el arreglo, donde coincide el id con el action activo y en caso contrario regresa el objeto tal cual esta
+        return {
+            ...state,
+            expenses: updatedExpenses,  //Coloca el expense updated
+            modal: false,     //Quita el modal
+            editingID:''   //elimina el id guardado
+        }
+
     }
 
     return state
