@@ -12,7 +12,25 @@ export type BudgetActions =
     {type: 'edit-get-id', payload:{id:Expense['id']}} |  //Action que captura y guarda el id editable
     {type: 'edit-expense', payload:{expense: Expense}}
 
+//FUNCIONES
+const createExpense = (draftExpense:DraftExpense) : Expense => { //Ingresa un tipo draft regresa el objeto con ID
+    return {
+        ...draftExpense,    //Copia del objeto
+        id: uuidv4(),     //Regresa el added id con función
+    }
+}
 
+const initialBudget = (): number => {      
+    const localStorageBudget = localStorage.getItem('budget');
+    return localStorageBudget ? parseFloat(localStorageBudget) : 0; // Convertir a número usando parseFloat
+};
+
+const initialExpenses = (): Expense[] => {      
+    const localStorageExpenses = localStorage.getItem('expenses');
+    return localStorageExpenses ? JSON.parse(localStorageExpenses) : []; 
+};
+
+    //REDUCER CONFIG
 export type BudgetState = {
     budget:number         //Aqui guarda el budget
     modal: boolean
@@ -21,19 +39,11 @@ export type BudgetState = {
 }
 
 export const initialState: BudgetState = { //iniciamos los estados
-    budget: 0,
-    modal: false,   
-    expenses: [],
+    budget: initialBudget(),         //usa funcion para revisar localStorage
+    modal: false,    
+    expenses: initialExpenses(),    //usa funcion para revisar localStorage
     editingID: ''
 }
-
-const createExpense = (draftExpense:DraftExpense) : Expense => { //Ingresa un tipo draft regresa el objeto con ID
-    return {
-        ...draftExpense,    //Copia del objeto
-        id: uuidv4(),     //Regresa el added id con función
-    }
-}
-
 
 export const budgetReducer = (
     state: BudgetState = initialState,

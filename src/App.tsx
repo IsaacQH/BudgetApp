@@ -1,5 +1,5 @@
 
-import { useMemo } from "react"
+import { useEffect, useMemo } from "react"
 import { useBudget } from "./hooks/useBudget"
 
 import { BudgetForm } from "./components/BudgetForm"
@@ -10,6 +10,11 @@ import { ExpenseList } from "./components/ExpenseList"
 function App() {
 
   const {state} = useBudget()  //Llamamos al custom Hook que tiene el context
+
+  useEffect(()=>{
+    localStorage.setItem('budget', state.budget.toString()) //Convertimos a string
+    localStorage.setItem('expenses', JSON.stringify(state.expenses)) //Conveiritmos objeto a string
+  }, [state.budget, state.expenses])
 
   const isValidBudget = useMemo(() => state.budget > 0, [state.budget]) //Revisa si existe o hay un budget
   
