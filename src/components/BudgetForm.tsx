@@ -29,7 +29,7 @@ export const BudgetForm = () => {
               id="budget"
               type="number"
               className="w-full bg-white border rounded-full border-gray-200 p-2"
-              placeholder="Budget"
+              placeholder="Add your budget"
               name="budget"
               value={budget ? budget : ''}
               onChange={handleChange}
