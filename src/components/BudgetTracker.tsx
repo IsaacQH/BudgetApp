@@ -5,11 +5,19 @@ import "react-circular-progressbar/dist/styles.css"
 
 export const BudgetTracker = () => {
 
-    const {state, totalExpenses, totalRest} = useBudget() //Se pasan las funciones del context
+    const {state, dispatch, totalExpenses, totalRest} = useBudget() //Se pasan las funciones del context
 
     const percentage = +((totalRest/state.budget) * 100).toFixed(2) //Regresa un valor de 2 en decimales ej . 40,56 . Hacerlo numero
 
     const minPercentage = 25
+
+    const confirmReset = () => {
+        const confirmation = confirm("Are you sure you want to reset the application?")
+
+        if(confirmation){
+            dispatch({type:'reset-application'})
+        }
+    }
 
     return (
         <>
@@ -31,7 +39,8 @@ export const BudgetTracker = () => {
                     <button
                         type="button"
                         className="bg-pink-600 w-full p-2 text-white text-center uppercase font-bold rounded-lg"
-                    >Reset App</button>
+                        onClick={()=> confirmReset()}
+                    >Reset Application</button>
 
                     <AmountDisplay
                         label = "Budget"

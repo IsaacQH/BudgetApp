@@ -10,7 +10,9 @@ export type BudgetActions =
     {type: 'add-expense', payload: {expense: DraftExpense}} |  //Action que añade expense tipo draft sin id
     {type: 'remove-expense', payload:{id:Expense['id']}} | //Action que captura el id y remueve
     {type: 'edit-get-id', payload:{id:Expense['id']}} |  //Action que captura y guarda el id editable
-    {type: 'edit-expense', payload:{expense: Expense}}
+    {type: 'edit-expense', payload:{expense: Expense}} | //Action que edita el expense
+    {type: 'reset-application'}
+
 
 //FUNCIONES
 const createExpense = (draftExpense:DraftExpense) : Expense => { //Ingresa un tipo draft regresa el objeto con ID
@@ -109,7 +111,15 @@ export const budgetReducer = (
             modal: false,     //Quita el modal
             editingID:''   //elimina el id guardado
         }
+    }
 
+    if(action.type === 'reset-application'){
+        return{
+            budget: 0,         //usa funcion para revisar localStorage
+            modal: false,    
+            expenses: [],    //usa funcion para revisar localStorage
+            editingID: ''
+        }
     }
 
     return state
