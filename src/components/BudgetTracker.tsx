@@ -1,15 +1,9 @@
 import { AmountDisplay } from "./AmountDisplay"
 import { useBudget } from "../hooks/useBudget"
-import { useMemo } from "react"
 
 export const BudgetTracker = () => {
 
-    const {state} = useBudget()
-
-    const totalExpenses = useMemo( () => state.expenses.reduce((total, expense) => total + expense.amount, 0), [state.expenses])  //Caldula el total de gastos, usa un reduce
-
-    const totalRest = useMemo( () => state.budget - totalExpenses, [state.expenses])  //Calcula el total de la resta disponible
-
+    const {state, totalExpenses, totalRest} = useBudget() //Se pasan las funciones del context
 
     return (
         <>
@@ -33,7 +27,7 @@ export const BudgetTracker = () => {
                         amount = {totalExpenses}
                     />
                     <AmountDisplay
-                        label = "Available"
+                        label = "Balance"
                         amount = {totalRest}
                     />
 

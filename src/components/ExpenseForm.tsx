@@ -19,12 +19,14 @@ export const ExpenseForm = () => {
         date: new Date()
     })
     const [error, setError] = useState('') //State para colocar error
-    const {state, dispatch} = useBudget()
+    const [previousAmount, setPreviousAmount] = useState(0)  //Monto anterior balance
+    const {state, dispatch, totalRest} = useBudget()
 
     useEffect(() => {     
         if(state.editingID){      //Revisa que exista un state
             const editingExpense = state.expenses.filter((expense) => expense.id === state.editingID)[0]  //Rgresa el primer valor del filter coincidiendo con los ids del state registrado y el arreglo expenses
             setExpense(editingExpense)   //Setea los valores del expense al objeto  y llena el formulario
+            setPreviousAmount(editingExpense.amount) //Nos permite congelar para poder evaluar el valor
         }
     },[state.editingID])  //useEffet para revisar cada que exista un editingID
 
@@ -47,13 +49,19 @@ export const ExpenseForm = () => {
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault() //Impide actualziar pagina
 
-        //vañidar
+        //Validando formulario
         if(Object.values(expense).includes('')){ //Revisa si existe includes en el objeto expense
             setError('All field must be fulled')
             return
         }
 
-        if(state.editingID){  //Si existe un editID estamos editando, sino creando
+        //Validando por dispnibilidad de budget
+        if((expense.amount - previousAmount) > totalRest){ //Revisa si la resta cerá negativa
+            setError('This expenditure exceeds the available balance')
+            return
+        }
+        //Revisando si hay algú ID
+        if(state.editingID){ 
             dispatch({type: 'edit-expense', payload: {expense: {id: state.editingID, ...expense}}}) //Pasa el payload con un nuevo objeto pero el mismo id
         } else {
             dispatch({type:'add-expense', payload:{expense: expense}}) //Agrega un bill
@@ -66,6 +74,7 @@ export const ExpenseForm = () => {
             category: '',
             date: new Date()
         })
+        setPreviousAmount(0)    //reinicia el amount
     }
         
     return (
@@ -100,11 +109,12 @@ export const ExpenseForm = () => {
                 >Amount</label>
                 <input
                     type="number"
+                    min="0"
                     id = "amount"
                     placeholder="Add the amount"
                     className="bg-slate-100 p-2"
                     name="amount"
-                    value={expense.amount}
+                    value={expense.amount ? expense.amount : ''}
                     onChange={handleChange}
                 />
 
