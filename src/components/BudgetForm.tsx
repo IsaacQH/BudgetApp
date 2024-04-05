@@ -31,7 +31,7 @@ export const BudgetForm = () => {
               className="w-full bg-white border rounded-full border-gray-200 p-2"
               placeholder="Budget"
               name="budget"
-              value={budget}
+              value={budget ? budget : ''}
               onChange={handleChange}
             />
           </div>

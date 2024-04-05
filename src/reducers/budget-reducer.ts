@@ -2,6 +2,7 @@
 //Reducer para el budget: Controlaremos todo el tema del presupuesto, desde editarlo, eliminarlos, filstrar categorias que reducen el presupuesto, etc. Todas las acciones
 import {v4 as uuidv4} from 'uuid'
 import { DraftExpense, Expense } from "../types"
+import { Category } from '../types'
 
 export type BudgetActions = 
     {type: 'add-budget', payload:{budget:number}} |   //action dispatch que captura el budget
@@ -11,7 +12,8 @@ export type BudgetActions =
     {type: 'remove-expense', payload:{id:Expense['id']}} | //Action que captura el id y remueve
     {type: 'edit-get-id', payload:{id:Expense['id']}} |  //Action que captura y guarda el id editable
     {type: 'edit-expense', payload:{expense: Expense}} | //Action que edita el expense
-    {type: 'reset-application'}
+    {type: 'reset-application'} | //Action para resetear la app
+    {type: 'add-filter-category', payload:{id:Category['id']}} //Action para resetear la app
 
 
 //FUNCIONES
@@ -38,13 +40,15 @@ export type BudgetState = {
     modal: boolean
     expenses: Expense[] //Tipo expense porque añadirá un id
     editingID: Expense['id']   //Alberga el id que se editará
+    currentCategory: Category['id'] //Estado que guarda el id de category del filter
 }
 
 export const initialState: BudgetState = { //iniciamos los estados
     budget: initialBudget(),         //usa funcion para revisar localStorage
     modal: false,    
     expenses: initialExpenses(),    //usa funcion para revisar localStorage
-    editingID: ''
+    editingID: '',
+    currentCategory: ''
 }
 
 export const budgetReducer = (
@@ -113,12 +117,20 @@ export const budgetReducer = (
         }
     }
 
-    if(action.type === 'reset-application'){
+    if(action.type === 'add-filter-category'){
+        return{
+            ...state,
+            currentCategory: action.payload.id  //Captura el id del category
+        }
+    }
+
+    if(action.type === 'reset-application'){  //Resetea la aplicaicón
         return{
             budget: 0,         //usa funcion para revisar localStorage
             modal: false,    
             expenses: [],    //usa funcion para revisar localStorage
-            editingID: ''
+            editingID: '',
+            currentCategory:''  
         }
     }
 
