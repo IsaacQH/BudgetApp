@@ -1,7 +1,6 @@
 
 import { useEffect, useMemo } from "react"
 import { useBudget } from "./hooks/useBudget"
-
 import { BudgetForm } from "./components/BudgetForm"
 import { BudgetTracker } from "./components/BudgetTracker"
 import ExpenseModal from "./components/ExpenseModal"
